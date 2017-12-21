@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+#header{
+    background-color: #6692a6;
+    padding-left: 100px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+#header h1{
+    color:white;
+}
+
+#query_form{
+    margin-left: 100px;
+}
+
+#queryText{
+  width: 85%;
+}
+
+#inputButton{
+  display: inline-block;
+  padding: 10px 15px;
+  font-size: 20px;
+  border-radius: 0;
+  -webkit-appearance: none;
+  border: 1px solid transparent;
+}
+
+.chart{
+    margin-left: 100px;
+    margin-right: 100px;
+}
