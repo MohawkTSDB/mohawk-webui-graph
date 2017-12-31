@@ -25,6 +25,10 @@ body {
   width: 85%;
 }
 
+#input-button{
+  margin-left: 10px;
+}
+
 .chart{
     margin-left: 100px;
     margin-right: 100px;

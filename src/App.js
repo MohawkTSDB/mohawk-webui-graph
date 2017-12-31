@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { LineChart, Button } from 'patternfly-react';
+import "patternfly/dist/css/patternfly.css";
+import "patternfly/dist/css/patternfly-additions.css";
 
 const lineChartDataColumns = [
     ['data1', 30, 200, 100, 400, 150, 250],
@@ -31,8 +33,6 @@ class App extends Component {
         <form name="queryForm" id="query-form">
           <div className="query">
             <input id="query-text" value={this.state.value} />
-          </div>
-          <div className="query">
             <Button
               id="input-button"
               onClick={this.query}
