@@ -22,6 +22,7 @@ body {
 }
 
 #query-text{
+  margin-left: 2px;
   width: 85%;
 }
 
