@@ -3,28 +3,60 @@ import { LineChart, Button } from 'patternfly-react';
 import "patternfly/dist/css/patternfly.css";
 import "patternfly/dist/css/patternfly-additions.css";
 
-const lineChartDataColumns = [
-    ['data1', 30, 200, 100, 400, 150, 250],
-    ['data2', 50, 220, 310, 240, 115, 25],
-    ['data3', 70, 100, 390, 295, 170, 220],
-    ['data4', 10, 340, 30, 290, 35, 20],
-    ['data5', 90, 150, 160, 165, 180, 5]
-];
-const lineChartConfigData = {
-    columns: lineChartDataColumns
-};
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {value: ''};
+    this.state = {
+      inputValue: '',
+      lineChartConfigData: {
+        json: [],
+        keys: {
+          x: 'timestamp',
+          value: ['value']
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+            }
+        }
+      }
+  };
 
     this.query = this.query.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
+  handleInputChange(event) {
+    this.setState({inputValue: event.target.value})
+  }
 
   query(event) {
-    console.log("Querying.." + this.state.value);
+    let url = 'http://localhost:8080/hawkular/metrics/gauges/' + this.state.inputValue+ '/raw'
+    fetch(url).then(response => {
+      if (response.status !== 200) {
+        console.log("Something went wrong! Got respsonse status " + response.status)
+        return ;
+      }
+
+      response.json().then(data => {
+          this.setState({lineChartConfigData:
+            {
+              json: data,
+              keys: {
+                x: 'timestamp',
+                value: ['value']
+              },
+              axis: {
+                  x: {
+                      type: 'timeseries',
+                  }
+              }
+            }
+          });
+          return;
+      });
+    });
   }
 
   render() {
@@ -32,7 +64,8 @@ class App extends Component {
       <div className="App">
         <form name="queryForm" id="query-form">
           <div className="query">
-            <input id="query-text" value={this.state.value} />
+            <b>Query:</b>
+            <input id="query-text" value={this.state.inputValue} onChange={this.handleInputChange}/>
             <Button
               id="input-button"
               onClick={this.query}
@@ -46,7 +79,7 @@ class App extends Component {
           <LineChart
             id="line-chart-2"
             type="spline"
-            data={lineChartConfigData}
+            data={this.state.lineChartConfigData}
             grid={{
               y: {
                 show: false
