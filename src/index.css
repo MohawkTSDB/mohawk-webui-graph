@@ -30,6 +30,10 @@ body {
   margin-left: 10px;
 }
 
+.nav-tabs{
+  background-color: #6692a6;
+}
+
 .chart{
     margin-left: 100px;
     margin-right: 100px;
