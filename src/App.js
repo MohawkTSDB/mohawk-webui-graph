@@ -9,19 +9,8 @@ class App extends Component {
     super(props);
     this.state = {
       inputValue: '',
-      lineChartConfigData: {
-        json: [],
-        keys: {
-          x: 'timestamp',
-          value: ['value']
-        },
-        axis: {
-            x: {
-                type: 'timeseries',
-            }
-        }
-      }
-  };
+      data: [],
+    };
 
     this.query = this.query.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -40,20 +29,7 @@ class App extends Component {
       }
 
       response.json().then(data => {
-          this.setState({lineChartConfigData:
-            {
-              json: data,
-              keys: {
-                x: 'timestamp',
-                value: ['value']
-              },
-              axis: {
-                  x: {
-                      type: 'timeseries',
-                  }
-              }
-            }
-          });
+          this.setState({data: data});
           return;
       });
     });
@@ -79,7 +55,18 @@ class App extends Component {
           <LineChart
             id="line-chart-2"
             type="spline"
-            data={this.state.lineChartConfigData}
+            data={{
+              json: this.state.data,
+              keys: {
+                x: 'timestamp',
+                value: ['value']
+              },
+              axis: {
+                  x: {
+                      type: 'timeseries',
+                  }
+              }
+            }}
             grid={{
               y: {
                 show: false
