@@ -20,7 +20,7 @@ class MetricsTab extends Component {
   }
 
   query(event) {
-    let url = 'http://localhost:8080/hawkular/metrics/gauges/' + this.state.inputValue+ '/raw'
+    let url =  this.props.url + '/hawkular/metrics/gauges/' + this.state.inputValue+ '/raw'
     fetch(url).then(response => {
       if (response.status !== 200) {
         console.log("Something went wrong! Got respsonse status " + response.status)
@@ -37,7 +37,7 @@ class MetricsTab extends Component {
   render() {
     return (
       <div className="tab">
-        <form name="queryForm" id="query-form">
+        <form name="queryForm" className="query-form">
           <div className="query">
             <b>Query:</b>
             <input id="query-text" value={this.state.inputValue} onChange={this.handleInputChange}/>
@@ -60,11 +60,14 @@ class MetricsTab extends Component {
                 x: 'timestamp',
                 value: ['value']
               },
-              axis: {
-                  x: {
-                      type: 'timeseries',
-                  }
-              }
+            }}
+            axis ={{
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                      format: '%Y-%m-%d %H:%M'
+                    },
+                },
             }}
             grid={{
               y: {
