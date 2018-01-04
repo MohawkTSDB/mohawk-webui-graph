@@ -15,14 +15,7 @@ body {
     color:white;
 }
 
-#query-form{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 100px;
-}
-
 #query-text{
-  margin-left: 2px;
   width: 85%;
 }
 
@@ -30,12 +23,29 @@ body {
   margin-left: 10px;
 }
 
+.url input {
+  width: 20%;
+  margin-bottom: 10px;
+}
+
+.query-form{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.query-form b {
+  margin-right: 10px;
+}
+
+.tab {
+  margin-left: 100px;
+}
+
 .nav-tabs{
   background-color: #6692a6;
 }
 
 .chart{
-    margin-left: 100px;
     margin-right: 100px;
 }
 
