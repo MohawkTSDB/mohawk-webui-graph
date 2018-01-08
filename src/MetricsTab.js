@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { LineChart, Button } from 'patternfly-react';
+import {DropdownButton} from 'react-bootstrap'
 import "patternfly/dist/css/patternfly.css";
 import "patternfly/dist/css/patternfly-additions.css";
 
@@ -42,14 +43,16 @@ class MetricsTab extends Component {
             <b>Query:</b>
             <input id="query-text" value={this.state.inputValue} onChange={this.handleInputChange}/>
             <Button
-              id="input-button"
+              className="input-button"
               onClick={this.query}
             >
               Execute
             </Button>
+            <DropdownButton id="dropdown-tenant" title={"Tenant"} onChange={this.handleAuthenticationSelect}>
+
+            </DropdownButton>
           </div>
         </form>
-
         <div className="chart">
           <LineChart
             id="line-chart-2"

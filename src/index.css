@@ -16,10 +16,14 @@ body {
 }
 
 #query-text{
-  width: 85%;
+  width: 75%;
 }
 
-#input-button{
+#dropdown-tenant {
+  margin-left: 10px;
+}
+
+.input-button {
   margin-left: 10px;
 }
 
