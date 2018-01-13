@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { LineChart, Button } from 'patternfly-react';
-import {DropdownButton} from 'react-bootstrap'
+import { DropdownButton, MenuItem } from 'react-bootstrap'
 import "patternfly/dist/css/patternfly.css";
 import "patternfly/dist/css/patternfly-additions.css";
 
@@ -36,6 +36,11 @@ class MetricsTab extends Component {
   }
 
   render() {
+    const tenants = this.props.tenants;
+    const tenants_button_list = tenants.map((tenant, index) => {
+      return <MenuItem key={index}>{tenant}</MenuItem>
+    });
+
     return (
       <div className="tab">
         <form name="queryForm" className="query-form">
@@ -48,8 +53,8 @@ class MetricsTab extends Component {
             >
               Execute
             </Button>
-            <DropdownButton id="dropdown-tenant" title={"Tenant"} onChange={this.handleAuthenticationSelect}>
-
+            <DropdownButton id="dropdown-tenant" title={"Tenants"}>
+             {tenants_button_list}
             </DropdownButton>
           </div>
         </form>

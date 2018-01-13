@@ -14,6 +14,8 @@ class App extends Component {
       url: DEFAULT_URL,
       tenants: []
     }
+    this.getTenants = this.getTenants.bind(this);
+    this.getUrlFromUser = this.getUrlFromUser.bind(this);
   }
 
   getTenants() {
@@ -24,8 +26,14 @@ class App extends Component {
       }
 
       response.json().then(data => {
-        console.log(data);
-        return data;
+        let tenant_list = [];
+        data.forEach(tenant => {
+          tenant_list.push(tenant.id);
+        });
+        console.log(tenant_list);
+        this.setState({
+          tenants: tenant_list,
+        });
       });
     });
   }
@@ -33,8 +41,14 @@ class App extends Component {
   getUrlFromUser = (newURL) => {
     this.setState({
       url: newURL,
-      tenants: this.getTenants()
     });
+    this.setState({
+      tenants: this.getTenants(),
+    });
+  }
+
+  componentDidMount(){
+    this.getTenants();
   }
 
   render() {
