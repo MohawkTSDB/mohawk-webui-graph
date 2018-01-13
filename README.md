@@ -14,7 +14,7 @@ Currently we only support querying by metrics id.
 
 ## Example usage
 
-Run you're Mohawk app (default port is 8080) and push some metrics to it (If you want to push some random metrics use the scripts provided in `src/server/examples`)
+Run you're Mohawk app (default port is 8080) and push some metrics to it (If you want to push some random metrics use the scripts provided in `src/examples`)
 
 ```
 mohawk -V
