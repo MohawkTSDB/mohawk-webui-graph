@@ -30,7 +30,6 @@ class App extends Component {
         data.forEach(tenant => {
           tenant_list.push(tenant.id);
         });
-        console.log(tenant_list);
         this.setState({
           tenants: tenant_list,
         });
@@ -42,9 +41,8 @@ class App extends Component {
     this.setState({
       url: newURL,
     });
-    this.setState({
-      tenants: this.getTenants(),
-    });
+    // update the tenants list once the url has been updated.
+    this.getTenants();
   }
 
   componentDidMount(){
