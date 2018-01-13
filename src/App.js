@@ -11,19 +11,51 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: DEFAULT_URL
+      url: DEFAULT_URL,
+      tenants: []
     }
+    this.getTenants = this.getTenants.bind(this);
+    this.getUrlFromUser = this.getUrlFromUser.bind(this);
+  }
+
+  getTenants() {
+    fetch(this.state.url + '/hawkular/metrics/tenants').then(response => {
+      if (response.status !== 200) {
+        console.log("Something went wrong! Got respsonse status " + response.status)
+        return [];
+      }
+
+      response.json().then(data => {
+        let tenant_list = [];
+        data.forEach(tenant => {
+          tenant_list.push(tenant.id);
+        });
+        console.log(tenant_list);
+        this.setState({
+          tenants: tenant_list,
+        });
+      });
+    });
   }
 
   getUrlFromUser = (newURL) => {
-    this.setState({url: newURL})
+    this.setState({
+      url: newURL,
+    });
+    this.setState({
+      tenants: this.getTenants(),
+    });
+  }
+
+  componentDidMount(){
+    this.getTenants();
   }
 
   render() {
     return (
       <div className="App">
        <Tabs defaultActiveKey={1} id="tab-menu">
-         <Tab eventKey={1} title="Metrics">{<MetricsTab url={this.state.url}/>}</Tab>
+         <Tab eventKey={1} title="Metrics">{<MetricsTab tenants={this.state.tenants} url={this.state.url}/>}</Tab>
          <Tab eventKey={2} title="Alerts"></Tab>
          <Tab eventKey={3} title="Configuration">{<ConfigurationTab changeConfigCallback={this.getUrlFromUser}/>}</Tab>
        </Tabs>
