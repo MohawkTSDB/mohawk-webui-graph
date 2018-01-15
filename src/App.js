@@ -18,14 +18,19 @@ class App extends Component {
     this.getUrlFromUser = this.getUrlFromUser.bind(this);
   }
 
+  /**
+   * Fetch a list of tenants from tenants_endpoint and change state accordingly.
+   * This method is called at any change of mohawk endpoint in Configuration Tab.
+   */
   getTenants() {
-    fetch(this.state.url + '/hawkular/metrics/tenants').then(response => {
+    const tenants_endpoint = '/hawkular/metrics/tenants'
+    fetch(this.state.url + tenants_endpoint).then(response => {
       if (response.status !== 200) {
         console.log("Something went wrong! Got respsonse status " + response.status)
-        return [];
+        return ;
       }
-
       response.json().then(data => {
+        // collect tenants from response.
         let tenant_list = [];
         data.forEach(tenant => {
           tenant_list.push(tenant.id);
@@ -37,15 +42,21 @@ class App extends Component {
     });
   }
 
+  /**
+   * This callback is called at any change of url under the Configuration Tab thus changing the mohawk endpoint.
+   * See ConfigurationTab props.
+   */
   getUrlFromUser = (newURL) => {
     this.setState({
       url: newURL,
+    }, () => {
+      // update the tenants list once the url has been updated.
+      this.getTenants();
     });
-    // update the tenants list once the url has been updated.
-    this.getTenants();
   }
 
   componentDidMount(){
+    // get tenants upon mounting the component.
     this.getTenants();
   }
 

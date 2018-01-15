@@ -10,24 +10,44 @@ class MetricsTab extends Component {
     this.state = {
       inputValue: '',
       data: [],
+      activeTenant: '_ops',
     };
 
-    this.query = this.query.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.query                   = this.query.bind(this);
+    this.handleTenantChange      = this.handleTenantChange.bind(this);
+    this.handleInputChange       = this.handleInputChange.bind(this);
   }
 
+  /**
+  * Callback for handling query input change.
+  */
   handleInputChange(event) {
     this.setState({inputValue: event.target.value})
   }
 
+  /**
+  * Callback for handling tenant dropdown change.
+  */
+  handleTenantChange(event,eventKey) {
+    this.setState({activeTenant: eventKey.target.id})
+  }
+
+  /**
+  * This is the main query method to query mohawk for data.
+  * Response is rendered as a chart.
+  */
   query(event) {
-    let url =  this.props.url + '/hawkular/metrics/gauges/' + this.state.inputValue+ '/raw'
-    fetch(url).then(response => {
+    let url =  this.props.url + '/hawkular/metrics/gauges/' + this.state.inputValue + '/raw'
+    let requestOptions = {
+      headers: new Headers({
+        'Hawkular-Tenant': this.state.activeTenant
+      }),
+    };
+    fetch(url, requestOptions).then(response => {
       if (response.status !== 200) {
         console.log("Something went wrong! Got respsonse status " + response.status)
         return ;
       }
-
       response.json().then(data => {
           this.setState({data: data});
           return;
@@ -38,7 +58,7 @@ class MetricsTab extends Component {
   render() {
     const tenants = this.props.tenants;
     const tenants_button_list = tenants.map((tenant, index) => {
-      return <MenuItem key={index}>{tenant}</MenuItem>
+      return <MenuItem key={index} id={tenant} onSelect={this.handleTenantChange}>{tenant}</MenuItem>
     });
 
     return (
