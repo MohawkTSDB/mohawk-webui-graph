@@ -81,7 +81,7 @@ class MetricsTab extends Component {
         <div className="chart">
           <LineChart
             id="line-chart-2"
-            type="spline"
+            type="line"
             data={{
               json: this.state.data,
               keys: {
