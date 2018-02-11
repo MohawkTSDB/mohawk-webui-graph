@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { LineChart, Button } from 'patternfly-react';
 import { DropdownButton, MenuItem } from 'react-bootstrap'
+import QueryParser from './QueryParser.js'
+import ResponseParser from './ResponseParser.js'
 import "patternfly/dist/css/patternfly.css";
 import "patternfly/dist/css/patternfly-additions.css";
 
@@ -11,6 +13,7 @@ class MetricsTab extends Component {
       inputValue: '',
       data: [],
       activeTenant: '_ops',
+      xs: {},
     };
 
     this.query                   = this.query.bind(this);
@@ -37,20 +40,29 @@ class MetricsTab extends Component {
   * Response is rendered as a chart.
   */
   query(event) {
-    let url =  this.props.url + '/hawkular/metrics/gauges/' + this.state.inputValue + '/raw'
+    let url =  this.props.url + '/hawkular/metrics/gauges/raw/query'
+    let query_parser = new QueryParser(this.state.inputValue);
+    let request_body = query_parser.parseQuery()
     let requestOptions = {
+      method: 'POST',
       headers: new Headers({
         'Hawkular-Tenant': this.state.activeTenant
       }),
+      body: JSON.stringify(request_body),
     };
+
     fetch(url, requestOptions).then(response => {
       if (response.status !== 200) {
         console.log("Something went wrong! Got respsonse status " + response.status)
         return ;
       }
-      response.json().then(data => {
-          this.setState({data: data});
-          return;
+
+      response.json().then(json => {
+        let parser = new ResponseParser(json)
+        let [columns, xs] = parser.parseResponse();
+        this.setState({data: columns, xs:xs});
+        debugger
+        return;
       });
     });
   }
@@ -83,11 +95,8 @@ class MetricsTab extends Component {
             id="line-chart-2"
             type="line"
             data={{
-              json: this.state.data,
-              keys: {
-                x: 'timestamp',
-                value: ['value']
-              },
+              xs: this.state.xs,
+              columns: this.state.data,
             }}
             axis ={{
                 x: {
