@@ -10,7 +10,7 @@ Default Mohawk endpoint is localhost:8080 which is the default endpoint we fetch
 
 ## Query Language
 
-Currently we only support querying by metrics id.
+Querying can be done by metrics id's or by labels regexp.
 
 ## Example usage
 
