@@ -4,6 +4,7 @@ import "patternfly/dist/css/patternfly.css";
 import "patternfly/dist/css/patternfly-additions.css";
 import MetricsTab from './MetricsTab.js'
 import ConfigurationTab from './ConfigurationTab.js'
+import MohawkClient from '../helpers/MohawkClient.js'
 
 export const DEFAULT_URL = 'http://localhost:8080';
 
@@ -14,32 +15,7 @@ class App extends Component {
       url: DEFAULT_URL,
       tenants: []
     }
-    this.getTenants = this.getTenants.bind(this);
     this.getUrlFromUser = this.getUrlFromUser.bind(this);
-  }
-
-  /**
-   * Fetch a list of tenants from tenants_endpoint and change state accordingly.
-   * This method is called at any change of mohawk endpoint in Configuration Tab.
-   */
-  getTenants() {
-    const tenants_endpoint = '/hawkular/metrics/tenants'
-    fetch(this.state.url + tenants_endpoint).then(response => {
-      if (response.status !== 200) {
-        console.log("Something went wrong! Got respsonse status " + response.status)
-        return ;
-      }
-      response.json().then(data => {
-        // collect tenants from response.
-        let tenant_list = [];
-        data.forEach(tenant => {
-          tenant_list.push(tenant.id);
-        });
-        this.setState({
-          tenants: tenant_list,
-        });
-      });
-    });
   }
 
   /**
@@ -51,13 +27,21 @@ class App extends Component {
       url: newURL,
     }, () => {
       // update the tenants list once the url has been updated.
-      this.getTenants();
+      let client = new MohawkClient(DEFAULT_URL);
+      let tenant_list = client.getTenants()
+      this.setState({
+        tenants: tenant_list,
+      });
     });
   }
 
   componentDidMount(){
     // get tenants upon mounting the component.
-    this.getTenants();
+    let client = new MohawkClient(DEFAULT_URL);
+    let tenant_list = client.getTenants()
+    this.setState({
+      tenants: tenant_list,
+    });
   }
 
   render() {
