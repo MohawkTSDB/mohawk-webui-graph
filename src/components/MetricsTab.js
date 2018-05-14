@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { LineChart, Button } from 'patternfly-react';
 import { DropdownButton, MenuItem } from 'react-bootstrap'
-import QueryParser from './QueryParser.js'
-import ResponseParser from './ResponseParser.js'
+import QueryParser from '../helpers/QueryParser.js'
+import ResponseParser from '../helpers/ResponseParser.js'
+import MohawkClient from '../helpers/MohawkClient.js'
 import "patternfly/dist/css/patternfly.css";
 import "patternfly/dist/css/patternfly-additions.css";
 
@@ -16,7 +17,7 @@ class MetricsTab extends Component {
       xs: {},
     };
 
-    this.query                   = this.query.bind(this);
+    this.queryEventHandler       = this.queryEventHandler.bind(this);
     this.handleTenantChange      = this.handleTenantChange.bind(this);
     this.handleInputChange       = this.handleInputChange.bind(this);
   }
@@ -39,11 +40,13 @@ class MetricsTab extends Component {
   * This is the main query method to query mohawk for data.
   * Response is rendered as a chart.
   */
-  query(event) {
-    let url =  this.props.url + '/hawkular/metrics/gauges/raw/query'
+  queryEventHandler(event) {
+    let client = new MohawkClient(this.props.url)
+
+    let query_endpoint = '/hawkular/metrics/gauges/raw/query'
     let query_parser = new QueryParser(this.state.inputValue);
     let request_body = query_parser.parseQuery()
-    let requestOptions = {
+    let request_options = {
       method: 'POST',
       headers: new Headers({
         'Hawkular-Tenant': this.state.activeTenant
@@ -51,20 +54,15 @@ class MetricsTab extends Component {
       body: JSON.stringify(request_body),
     };
 
-    fetch(url, requestOptions).then(response => {
-      if (response.status !== 200) {
-        console.log("Something went wrong! Got respsonse status " + response.status)
-        return ;
-      }
+    let callback = json => {
+      let parser = new ResponseParser(json)
+      let [columns, xs] = parser.parseResponse();
+      this.setState({data: columns, xs:xs});
+      return ;
+    }
 
-      response.json().then(json => {
-        let parser = new ResponseParser(json)
-        let [columns, xs] = parser.parseResponse();
-        this.setState({data: columns, xs:xs});
-        debugger
-        return;
-      });
-    });
+    callback.bind(this);
+    client.ajaxCall(query_endpoint, callback, request_options)
   }
 
   render() {
@@ -81,7 +79,7 @@ class MetricsTab extends Component {
             <input id="query-text" value={this.state.inputValue} onChange={this.handleInputChange}/>
             <Button
               className="input-button"
-              onClick={this.query}
+              onClick={this.queryEventHandler}
             >
               Execute
             </Button>
